@@ -1,0 +1,34 @@
+Hadoop Commands
+
+Start cluster:
+/usr/local/hadoop/bin/start-all.sh
+
+Stop cluster:
+/usr/local/hadoop/bin/stop-all.sh
+
+Copy files to HDFS:
+/usr/local/hadoop/bin/hadoop dfs -copyFromLocal /mnt/Shared_Files/gutenberg /user/hduser/gutenberg
+/usr/local/hadoop/bin/hadoop dfs -copyFromLocal /mnt/Shared_Files/mapper.py /home/hduser/mapper.py
+
+Run MapReduce job:
+/usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/hadoop-examples-1.0.3.jar wordcount /user/hduser/gutenberg /user/hduser/gutenberg-output
+
+Save results:
+mkdir /mnt/Shared_Files/gutenberg-output
+sudo bin/hadoop dfs -getmerge /user/hduser/flickr-output /mnt/Shared_Files/flickr-output
+
+Run custom mapper jobs:
+cat /mnt/Shared_Files/gutenberg/pg20417.txt | /mnt/Shared_Files/mapper.py
+
+Run custom MapReduce job:
+cd /usr/local/hadoop/
+bin/hadoop jar contrib/streaming/hadoop-streaming-1.0.3.jar \
+-file /mnt/Shared_Files/mapper.py -mapper /mnt/Shared_Files/mapper.py \
+-file /mnt/Shared_Files/reducer.py -reducer /mnt/Shared_Files/reducer.py \
+-input /user/hduser/gutenberg/* -output /user/hduser/gutenberg-output2
+
+cd /usr/local/hadoop/
+bin/hadoop jar contrib/streaming/hadoop-streaming-1.0.3.jar \
+-file /mnt/Shared_Files/csvMapper.py -mapper /mnt/Shared_Files/csvMapper.py \
+-file /mnt/Shared_Files/reducer.py -reducer /mnt/Shared_Files/reducer.py \
+-input /user/hduser/flickrdump.csv -output /user/hduser/flickr-output
